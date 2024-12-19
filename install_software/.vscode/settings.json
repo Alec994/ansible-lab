@@ -1,0 +1,7 @@
+{
+    "ansible.python.interpreterPath": "/usr/local/bin/python3.12",
+    "files.associations": {
+    "*plays.yml": "ansible",
+    "*init.yml": "yaml",
+  }
+}

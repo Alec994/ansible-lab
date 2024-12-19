@@ -1,0 +1,9 @@
+---
+- name: Install Apache
+  hosts: srv1
+  remote_user: root
+  
+  tasks:
+  - name: Installing apache2 ... wait for installation prossess
+    ansible.builtin.apt
+    apache2
