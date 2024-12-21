@@ -1,0 +1,44 @@
+---
+- name: "Getting hostname"
+  hosts: srv1
+  become: true
+  become_user: root
+  tasks:
+    - name: "Getting hostname srv1"
+      shell: echo $HOSTNAME
+      register: hostname
+
+    - name: "Getting CPU info srv1"
+      shell: free -h
+      register: free_info
+
+    - name: "Getting CPU info srv1"
+      shell: lscpu
+      register: cpu_info
+
+    - name: "Getting CPU info srv1"
+      shell: df -h
+      register: disk_info
+
+    - name: "Printing hostname"
+      debug:
+        var: hostname.stdout
+
+    - name: write hostname using jinja2
+      template:
+        src: ./templates/test.j2
+        dest: /var/www/html/index.html
+      become: true
+
+    - name: "File permissions"
+      file:
+        path: /var/www/html/index.html
+        owner: www-data
+        group: www-data
+        mode: '0755'
+
+    - name: "Restarting apache2 service"
+      systemd:
+        name: apache2
+        state: restarted
+      

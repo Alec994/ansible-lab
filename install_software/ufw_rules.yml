@@ -1,0 +1,33 @@
+---
+- name: "Configuring ufw rules"
+  hosts: srv1
+  become: true
+  become_user: root
+  tasks:
+    - name: "Installing ufw"
+      apt:
+        name:
+          - ufw
+        state: present
+
+    - name: "Starting ufw"
+      systemd:
+        name: ufw
+        state: started
+
+    - name: "Ufw status enagling"
+      ufw:
+        state: enabled
+        policy: allow
+
+    - name: "Allowing rules http"
+      ufw:
+        rule: allow
+        proto: tcp
+        port: '80'
+
+    - name: "Allowing rules https"
+      ufw:
+        rule: allow
+        proto: tcp
+        port: '443'

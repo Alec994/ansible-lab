@@ -1,0 +1,71 @@
+- name: Install Apache
+  hosts: srv1
+  become: true
+  become_user: root
+  tasks:
+    - name: "Updating packages"
+      apt:
+        update_cache: true
+
+    - name: "Installing Apache to the target"
+      apt:
+        state: present
+        name:
+          - apache2
+
+    - name: "Checking status apache on remote host"
+      systemd:
+        name: apache2
+        state: started
+        enabled: false
+
+      register: apache_status
+
+    - name: "Printing status apache.service"
+      debug:
+        var: apache_status.status.ActiveState
+
+    - name: "Rebooting the target sever"
+      reboot:
+        msg: "Reboot was initiated by Ansible"
+
+    - name: "Removing apache from the target"
+      apt:
+        state: absent
+        name:
+          - apache2
+
+    - name: "Rebooting the target sever"
+      reboot:
+        pre_reboot_delay: 60
+        msg: "Reboot was initiated by Ansible"
+
+    - name: "Installing Apache again to the target"
+      apt:
+        state: present
+        name:
+          - apache2
+
+    - name: "Enabling service apache2" 
+      systemd:
+        name: apache2
+        state: started 
+        enabled: true
+
+    - name: "Getting status service apache2" 
+      systemd:
+        name: apache2
+      register: apache_status
+
+
+    - name: "Printing status apache.service"
+      debug:
+        var: apache_status.status.ActiveState
+
+    - name: "Getting hostname"
+      shell: echo $HOSTNAEM
+      register: hostname
+    
+    - name: "Printing hostname"
+      debug:
+        var: hostname
